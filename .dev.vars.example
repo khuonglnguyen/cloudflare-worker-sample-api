@@ -1,0 +1,4 @@
+# Copy to .dev.vars for local `wrangler dev` (never commit .dev.vars).
+# Put real secrets here; for deployed Workers use `wrangler secret put <NAME>`.
+# This sample needs no secrets, but a typical place for e.g.:
+# GOOGLE_CLIENT_SECRET=...

@@ -1,0 +1,39 @@
+/**
+ * https://developers.cloudflare.com/workers/wrangler/configuration/
+ *
+ * Nothing secret lives in this file. Non-secret config goes in `vars`;
+ * secrets go in `.dev.vars` (local) or `wrangler secret put` (deployed).
+ * After editing bindings run `bun run cf-typegen`.
+ */
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "cloudflare-worker-sample-api",
+	"main": "src/index.ts",
+	"compatibility_date": "2026-08-08",
+	"compatibility_flags": ["nodejs_compat"],
+	"observability": { "enabled": true },
+
+	// Daily cleanup of expired share links (see `scheduled` in src/index.ts).
+	"triggers": { "crons": ["0 0 * * *"] },
+
+	// R2 bucket for file bytes. Create it with: wrangler r2 bucket create sample-api-files
+	"r2_buckets": [{ "binding": "BUCKET", "bucket_name": "sample-api-files" }],
+
+	// D1 database for share links. Create it with: wrangler d1 create sample-api-db
+	// then paste the returned id below.
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "sample-api-db",
+			"database_id": "00000000-0000-0000-0000-000000000000",
+			"migrations_dir": "migrations"
+		}
+	],
+
+	"vars": {
+		// Origin allowed by CORS (your frontend).
+		"FRONTEND_URL": "http://localhost:3000",
+		// Google OAuth *client id* (public). Create one at console.cloud.google.com.
+		"GOOGLE_CLIENT_ID": "your-client-id.apps.googleusercontent.com"
+	}
+}
